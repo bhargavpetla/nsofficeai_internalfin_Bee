@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NSOffice.AI - Business Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="app.css">
+<script src="turso.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <img src="NSOffice.AI Logo-02 1.png" alt="NSOffice.AI" style="height:40px;margin-bottom:20px">
+    <p>Business Command Center<br><span style="font-size:11px;color:#94a3b8">by Netscience Technologies Pvt. Ltd.</span><br>Enter password to continue</p>
+    <input type="password" id="loginPwd" placeholder="Password" autofocus>
+    <button onclick="tryLogin()">Unlock</button>
+    <div class="login-error" id="loginErr">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+<header class="header">
+  <div class="logo">
+    <img src="NSOffice.AI Logo-02 1.png" alt="NSOffice.AI" style="height:32px;margin-right:14px">
+    <div>
+      <div class="logo-sub" style="font-size:11px;color:var(--text3);margin-top:2px">Business Command Center</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="save-ind" id="saveInd">Saved</span>
+    <div class="header-meta">
+      <span><span class="dot"></span>Live Model</span>
+      <span>Mumbai HQ</span>
+      <span>AWS: IN | AE | UK</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="summary">Unit Economics & P&L</button>
+  <button class="tab-btn" data-tab="simulator">Onboard Simulator</button>
+  <button class="tab-btn" data-tab="pricing">Pricing Engine</button>
+  <button class="tab-btn" data-tab="admin">Cost Controls</button>
+  <button class="tab-btn" data-tab="portfolio">Portfolio</button>
+</nav>
+
+<main class="main">
+
+<!-- ======== UNIT ECONOMICS & P&L ======== -->
+<div id="summary" class="tab-content active">
+  <div class="section-header">
+    <div class="section-title">Unit Economics & P&L <span class="badge badge-admin">CEO DASHBOARD</span></div>
+    <div class="section-desc">Enterprise financial dashboard — all numbers driven dynamically from Cost Controls, Pricing Engine, and Portfolio. Updates in real time.</div>
+  </div>
+  <div id="ueDashboard"></div>
+</div>
+
+<!-- ======== ONBOARD SIMULATOR ======== -->
+<div id="simulator" class="tab-content">
+  <div class="section-header"><div class="section-title">Customer Onboarding Simulator</div><div class="section-desc">Model any prospective organisation. See costs, revenue, margin, and payback. Save to portfolio to update all dashboards.</div></div>
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="card-title">Organisation Profile</div>
+        <div class="grid-3">
+          <div class="form-group"><label class="form-label">Company Name</label><input class="form-input sim" id="sName" value="Acme Corp"></div>
+          <div class="form-group"><label class="form-label">Industry</label><select class="form-input sim" id="sSector">
+            <option>Manufacturing</option><option>Retail</option><option selected>FMCG / CPG</option><option>NBFC</option>
+            <option>Travel & Logistics</option><option>Banking & Finance</option><option>Insurance</option>
+            <option>Healthcare & Pharma</option><option>IT & Software</option><option>Telecom</option>
+            <option>Real Estate</option><option>Construction</option><option>Automobile</option>
+            <option>Energy & Utilities</option><option>Oil & Gas</option><option>Mining & Metals</option>
+            <option>Aerospace & Defence</option><option>Education</option><option>Media & Entertainment</option>
+            <option>Hospitality & Hotels</option><option>Food & Beverage</option><option>Agriculture</option>
+            <option>Textiles & Apparel</option><option>Chemicals</option><option>E-Commerce</option>
+            <option>Professional Services</option><option>Consulting</option><option>Legal Services</option>
+            <option>Government & PSU</option><option>NGO / Non-Profit</option><option>Sports & Fitness</option>
+            <option>Shipping & Maritime</option><option>Aviation</option><option>Warehousing & Supply Chain</option>
+            <option>Printing & Packaging</option><option>Gems & Jewellery</option><option>Other</option>
+          </select></div>
+          <div class="form-group"><label class="form-label">Region</label><select class="form-input sim" id="sRegion"><option value="india" selected>India</option><option value="uae">UAE</option><option value="uk">UK</option></select></div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label class="form-label">Authorized Users</label><input type="number" class="form-input sim" id="sUsers" value="50" min="1" oninput="autoFillActiveUsers()"></div>
+          <div class="form-group"><label class="form-label">Monthly Active Users <span class="badge badge-info">Editable (default 65%)</span></label><input type="number" class="form-input sim" id="sActive" value="33" min="1"></div>
+          <div class="form-group"><label class="form-label">Company Revenue</label><select class="form-input sim" id="sSize">
+            <option>Under $1M</option><option>$1M–$5M</option><option>$5M–$10M</option>
+            <option>$10M–$50M</option><option>$50M–$100M</option><option>$100M–$500M</option>
+            <option selected>$500M–$2B</option><option>$2B–$5B</option><option>$5B–$10B</option>
+            <option>$10B–$50B</option><option>$50B+</option>
+          </select></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Modules & Integrations</div>
+        <div class="grid-3">
+          <label class="toggle"><input type="checkbox" class="sim" id="sThink" checked><div class="toggle-track"></div><span class="toggle-label">Think</span></label>
+          <label class="toggle"><input type="checkbox" class="sim" id="sKnow"><div class="toggle-track"></div><span class="toggle-label">Know</span></label>
+          <label class="toggle"><input type="checkbox" class="sim" id="sDo"><div class="toggle-track"></div><span class="toggle-label">Do</span></label>
+        </div>
+        <div id="sIntCard" style="display:none;margin-top:12px">
+          <div class="card-title" style="font-size:13px">Know – MCP Integrations <span class="badge badge-info">per organisation</span></div>
+          <div class="grid-3">
+            <div class="form-group"><label class="form-label">Simple MCPs</label><input type="number" class="form-input sim" id="sIntS" value="2" min="0"><div class="form-hint">Email, Calendar, Drive</div></div>
+            <div class="form-group"><label class="form-label">Moderate MCPs</label><input type="number" class="form-input sim" id="sIntM" value="1" min="0"><div class="form-hint">CRM, HRMS</div></div>
+            <div class="form-group"><label class="form-label">Complex MCPs</label><input type="number" class="form-input sim" id="sIntC" value="0" min="0"><div class="form-hint">ERP, Finance</div></div>
+          </div>
+        </div>
+        <div id="sDoCard" style="display:none;margin-top:8px">
+          <div class="card-title" style="font-size:13px">Do – Workflow Modules <span class="badge badge-info">per organisation</span></div>
+          <div class="grid-3">
+            <div class="form-group"><label class="form-label">Simple Workflows</label><input type="number" class="form-input sim" id="sDoS" value="1" min="0"></div>
+            <div class="form-group"><label class="form-label">Moderate Workflows</label><input type="number" class="form-input sim" id="sDoM" value="0" min="0"></div>
+            <div class="form-group"><label class="form-label">Complex Workflows</label><input type="number" class="form-input sim" id="sDoC" value="0" min="0"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Expected Monthly Usage <span class="badge badge-info" id="usageModeLabel">whole organisation</span></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <span style="font-size:13px;font-weight:600" id="modeLabelUser">Per User</span>
+          <label class="toggle-switch" style="position:relative;display:inline-block;width:44px;height:24px;margin:0">
+            <input type="checkbox" id="usageModeToggle" checked style="opacity:0;width:0;height:0">
+            <span class="toggle-slider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--accent);border-radius:24px;transition:.3s"></span>
+          </label>
+          <span style="font-size:13px;font-weight:600" id="modeLabelOrg">Per Organisation</span>
+        </div>
+        <div class="section-desc" style="margin-bottom:14px">All consumption is charged per completed unit. Enter counts – NU and USD are calculated automatically from $/NU rate.</div>
+        <div id="usageConversionNote" class="card" style="border-left:4px solid var(--cyan);padding:10px 14px;margin-bottom:12px;display:none;font-size:12px;background:var(--bg2)"></div>
+        <div style="overflow-x:auto"><table class="data-table" id="simUsageTable">
+          <thead><tr><th style="min-width:180px">Category</th><th class="num">Core</th><th class="num">Extended</th><th class="num">Advanced</th><th class="num">Enterprise</th></tr></thead>
+          <tbody id="simUsageBody"></tbody>
+        </table></div>
+      </div>
+      <div id="sNUEstimate"></div>
+      <div class="card">
+        <div class="card-title">Pricing to Customer <span class="badge badge-info">from Pricing Module</span></div>
+        <div class="grid-3">
+          <div class="form-group"><label class="form-label">Monthly Subscription</label><input type="number" class="form-input sim" id="sSubP" value="100" readonly style="background:#f0f0f8;cursor:not-allowed"><div class="form-hint">Set in Pricing Engine</div></div>
+          <div class="form-group"><label class="form-label">Nectar Bundle</label><select class="form-input sim" id="sBundle"><option value="0">None (500 NU base)</option><option value="1000">1,000 NU – $180/mo</option><option value="2500" selected>2,500 NU – $400/mo</option><option value="5000">5,000 NU – $750/mo</option><option value="10000">10,000 NU – $1,400/mo</option><option value="25000">25,000 NU – $3,000/mo</option></select></div>
+          <div class="form-group"><label class="form-label">One-Time Do Module Fee</label><input type="number" class="form-input sim" id="sCustFee" value="0" min="0"><div class="form-hint">From Do Simple/Complex/Enterprise</div></div>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="saveToPortfolio()" style="width:100%">Save Organisation to Portfolio</button>
+    </div>
+    <div>
+      <div class="card"><div class="card-title">Onboarding Analysis <span class="badge badge-live">LIVE</span></div><div id="simRes"></div></div>
+      <div class="card"><div class="card-title">Cumulative ROI (24 months)</div><div class="chart-wrap tall"><canvas id="chSimROI"></canvas></div></div>
+      <div class="card"><div class="card-title">Monthly Cost Breakdown</div><div class="chart-wrap"><canvas id="chSimBar"></canvas></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PRICING ENGINE ======== -->
+<div id="pricing" class="tab-content">
+  <div class="section-header"><div class="section-title">Pricing Engine <span class="badge badge-admin">EDITABLE</span></div><div class="section-desc">Nectar Unit pricing, bundles, consumption economics, and what you charge customers. All values editable.</div></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Nectar Bundle Tiers <span class="badge badge-info">Customer Pricing</span></div>
+      <div id="bundleContainer"></div>
+      <button class="btn btn-secondary btn-sm" onclick="addBundle()" style="margin-top:10px">+ Add Tier</button>
+    </div>
+    <div class="card"><div class="card-title">$/NU by Tier</div><div class="chart-wrap"><canvas id="chPTier"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Customer Pricing – Integration & Modules <span class="badge badge-info">What you charge</span></div>
+    <div class="section-desc" style="margin-bottom:14px">These are one-time charges to the customer for setting up integrations. Employee cost to build is handled in Cost Controls.</div>
+    <div class="grid-3">
+      <div class="form-group"><label class="form-label">Simple MCP ($/org, one-time)</label><input type="number" class="form-input price-in" data-key="priceIntSimple" id="priceIntSimple" value="500"><div class="form-hint">Email, Calendar, Drive</div></div>
+      <div class="form-group"><label class="form-label">Moderate MCP ($/org, one-time)</label><input type="number" class="form-input price-in" data-key="priceIntModerate" id="priceIntModerate" value="1500"><div class="form-hint">CRM, HRMS</div></div>
+      <div class="form-group"><label class="form-label">Complex MCP ($/org, one-time)</label><input type="number" class="form-input price-in" data-key="priceIntComplex" id="priceIntComplex" value="5000"><div class="form-hint">ERP, Finance</div></div>
+    </div>
+    <div class="grid-3">
+      <div class="form-group"><label class="form-label">Do Simple ($/org, one-time)</label><input type="number" class="form-input price-in" data-key="priceDoSimple" id="priceDoSimple" value="1000"><div class="form-hint">Simple workflow setup</div></div>
+      <div class="form-group"><label class="form-label">Do Complex ($/org, one-time)</label><input type="number" class="form-input price-in" data-key="priceDoComplex" id="priceDoComplex" value="3000"><div class="form-hint">Complex workflow setup</div></div>
+      <div class="form-group"><label class="form-label">Do Enterprise ($/org, one-time)</label><input type="number" class="form-input price-in" data-key="priceDoEnterprise" id="priceDoEnterprise" value="8000"><div class="form-hint">Enterprise workflow suite</div></div>
+    </div>
+    <div class="grid-3">
+      <div class="form-group"><label class="form-label">Monthly Subscription ($/org/mo)</label><input type="number" class="form-input price-in" data-key="priceBaseSub" id="priceBaseSub" value="100"><div class="form-hint">Base platform access</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Nectar Unit Consumption Schedule <span class="badge badge-admin">EDITABLE</span></div>
+    <div class="section-desc" style="margin-bottom:14px">All consumption is charged per completed unit. Edit NU values – USD price per action is calculated automatically from $/NU rate.</div>
+    <div style="overflow-x:auto"><table class="data-table" id="nuScheduleTable"></table></div>
+  </div>
+  <div class="card"><div class="card-title">Order Form Highlights</div>
+    <div style="padding:12px;color:var(--text)">
+      <ul style="margin:0;padding-left:18px;color:var(--text3)">
+        <li><strong>Nectar Validity:</strong> 3 months from credit; unused NUs may roll forward within validity.</li>
+        <li><strong>Billing:</strong> Additional Nectar bundles billed in advance and credited on payment.</li>
+        <li><strong>Minimum:</strong> $100/mo subscription minimum applies regardless of remaining NUs.</li>
+        <li><strong>Refunds:</strong> Expired/unused NUs are forfeited and non-refundable unless agreed otherwise.</li>
+        <li><strong>Taxes & Payment:</strong> Applicable taxes (e.g., GST) extra. Payment terms: 100% advance.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div class="card-title">Margin % per Action</div><div class="chart-wrap tall"><canvas id="chPMargin"></canvas></div></div>
+    <div class="card"><div class="card-title">Cost vs Revenue per Action</div><div class="chart-wrap tall"><canvas id="chPCR"></canvas></div></div>
+  </div>
+  <div style="margin-top:16px;display:flex;justify-content:flex-end">
+    <button class="btn btn-success" onclick="save();updateAll()" style="min-width:180px">Save Pricing to Database</button>
+  </div>
+</div>
+
+<!-- ======== COST CONTROLS (ADMIN) ======== -->
+<div id="admin" class="tab-content">
+  <div class="section-header"><div class="section-title">Cost Controls <span class="badge badge-admin">ADMIN</span></div><div class="section-desc">Your actual costs to deliver NSOffice.AI. These are internal costs (not what you charge customers). Changes persist and propagate everywhere.</div></div>
+  <div class="export-bar">
+    <button class="btn btn-secondary btn-sm" onclick="exportCfg()">Export JSON</button>
+    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('impFile').click()">Import JSON</button>
+    <input type="file" id="impFile" accept=".json" style="display:none" onchange="importCfg(event)">
+    <button class="btn btn-danger btn-sm" onclick="if(confirm('Reset all to defaults?')){resetDef()}">Reset Defaults</button>
+  </div>
+  <div style="margin-top:10px;padding:10px;background:var(--bg3);border-radius:8px">
+    <div style="font-size:13px;margin-bottom:6px;color:var(--text)"><strong>Admin Password</strong></div>
+    <div class="form-group" style="max-width:360px"><label class="form-label">Login Password</label><input type="text" class="form-input adm" data-key="adminPwd" id="adminPwdInput" value="admin"><div class="form-hint">Change the admin password; changes are saved immediately.</div></div>
+  </div>
+  <div class="grid-2">
+    <div>
+      <div class="card"><div class="card-title">AWS Infrastructure <span class="badge badge-info">per month</span></div>
+        <div class="form-group"><label class="form-label">Base Cost (3 regions) $/mo</label><input type="number" class="form-input adm" data-key="awsBase" value="1500"><div class="form-hint">Fixed: dev, staging, base infra (India, UAE, UK)</div></div>
+        <div class="form-group"><label class="form-label">Per-Organisation $/mo</label><input type="number" class="form-input adm" data-key="awsPerCust" value="400"><div class="form-hint">Additional AWS cost per onboarded organisation</div></div>
+        <div class="form-group"><label class="form-label">Number of Organisations on AWS</label><input type="number" class="form-input adm" data-key="awsOrgs" value="0" min="0"><div class="form-hint">Current orgs on AWS (auto-synced from Portfolio count)</div></div>
+        <div class="slider-group"><span class="form-label" style="min-width:180px">Scaling Discount %/10 orgs</span><input type="range" min="0" max="50" value="15" class="adm" data-key="awsScale"><span class="slider-val" id="awsScaleVal">15%</span></div>
+        <div style="padding:10px;background:var(--bg3);border-radius:var(--radius-sm);margin-top:8px">
+          <span class="form-label">Calc @ <span id="admCC">0</span> orgs:</span> <strong id="admAws">$1,500/mo</strong>
+        </div>
+      </div>
+      <div class="card"><div class="card-title">Team <span class="badge badge-info">monthly, Mumbai</span></div><div id="teamInputs"></div>
+        <div style="padding:10px;background:var(--bg3);border-radius:var(--radius-sm);margin-top:8px"><span class="form-label">Total Team Cost:</span> <strong id="admTeam">$0/mo</strong></div>
+      </div>
+    </div>
+    <div>
+      <div class="card"><div class="card-title">API & Model Costs <span class="badge badge-info">per action, your cost</span></div><div id="apiInputs"></div></div>
+      <div class="card"><div class="card-title">Overheads <span class="badge badge-info">per month, company-wide</span></div>
+        <div class="grid-3">
+          <div class="form-group"><label class="form-label">Office $/mo</label><input type="number" class="form-input adm" data-key="office" value="2000"></div>
+          <div class="form-group"><label class="form-label">Tools $/mo</label><input type="number" class="form-input adm" data-key="tools" value="1500"><div class="form-hint">SaaS, dev tools, subscriptions</div></div>
+          <div class="form-group"><label class="form-label">Legal $/mo</label><input type="number" class="form-input adm" data-key="legal" value="500"></div>
+          <div class="form-group"><label class="form-label">Insurance $/mo</label><input type="number" class="form-input adm" data-key="insurance" value="200"></div>
+          <div class="form-group"><label class="form-label">Marketing $/mo</label><input type="number" class="form-input adm" data-key="marketing" value="1000"></div>
+          <div class="form-group"><label class="form-label">Misc $/mo</label><input type="number" class="form-input adm" data-key="misc" value="500"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:16px;display:flex;justify-content:flex-end">
+    <button class="btn btn-success" onclick="save();updateAll()" style="min-width:180px">Save Cost Controls to Database</button>
+  </div>
+</div>
+
+<!-- ======== PORTFOLIO ======== -->
+<div id="portfolio" class="tab-content">
+  <div class="section-header"><div class="section-title">Customer Portfolio</div><div class="section-desc">Saved organisations. The total count here drives the Dashboard, Breakeven, Funding, and Executive Summary calculations.</div></div>
+  <div id="portEmpty" style="text-align:center;padding:60px;color:var(--text3)">No organisations saved yet. Use Onboard Simulator to add.</div>
+  <div class="kpi-grid" id="portKpis" style="display:none"></div>
+  <div id="portGrid" class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))"></div>
+  <div class="grid-2" id="portCharts" style="display:none">
+    <div class="card"><div class="card-title">Revenue Comparison ($/mo per org)</div><div class="chart-wrap"><canvas id="chPortR"></canvas></div></div>
+    <div class="card"><div class="card-title">Margin Comparison (%)</div><div class="chart-wrap"><canvas id="chPortM"></canvas></div></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
